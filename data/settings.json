@@ -1,0 +1,20 @@
+{
+  "birthdayLetter": {
+    "enabled": true,
+    "buttonLabel": "OPEN PERSONAL TRANSMISSION",
+    "kicker": "Stark Industries // Private Channel",
+    "title": "For Amena",
+    "body": "Happy birthday, Amena.\n\nThis is not a normal birthday page, because you are not getting a normal birthday system. Somewhere between the Arc Reactor, the Quantum Map and JARVIS deciding that this entire operation required far too much engineering, this became a little world built around you.\n\nTony Stark gets the workshop. Thor gets the thunder. Natasha gets the precision. Wanda gets the impossible. Clint gets the focus. And somehow, all five ended up on the same board for one very important mission: celebrating you.\n\nI hope November 27 gives you a year full of moments worth keeping. I hope you get surprised, laugh until it hurts, find people who make ordinary days better, and have the kind of memories that refuse to fade.\n\nIf JARVIS reports a Level 7 emotional event, please understand that I had no intention of arguing with him.\n\nHappy birthday, Amena.\n\nThe system is yours now.\n\n— THE STARK PROTOCOL",
+    "secretWord": "jarvis"
+  },
+  "permanentUnlock": false,
+  "explore": {
+    "commonRoomTitle": "Stark Command",
+    "commonRoomText": "A private command deck built around a glowing core, moving telemetry, holographic-style diagnostics and a seat reserved for Amena.",
+    "candleTitle": "Arc Reactor Chamber",
+    "candleText": "The old candle system has been retired. The reactor chamber now powers the interactive Stark Lab experiences.",
+    "mapTitle": "Quantum Map",
+    "mapText": "Coordinates shift, anomalies appear and AI-generated missions can be created on demand."
+  },
+  "amenaUnlocked": false
+}

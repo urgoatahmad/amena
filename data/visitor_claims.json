@@ -1,0 +1,37 @@
+[
+  {
+    "id": "895a3e69-b038-45fd-a2e3-89cc2951edc1",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "quiet-star",
+    "fateAssignedAt": "2026-09-09T16:30:36.555Z"
+  },
+  {
+    "id": "32a25790-ccb7-47ca-9430-cb50fd668626",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "ember-marked",
+    "fateAssignedAt": "2026-09-09T16:36:51.983Z"
+  },
+  {
+    "id": "139b5696-e5fe-4fea-ad41-e7c8693c7bb4",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "ink-born",
+    "fateAssignedAt": "2026-09-09T16:57:26.282Z"
+  },
+  {
+    "id": "a337cc82-30d0-41c5-b2b4-2eecbf334620",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "starlit",
+    "fateAssignedAt": "2026-09-09T16:59:32.747Z"
+  },
+  {
+    "id": "3cae7a95-3b23-454d-9321-bb6f066312ca",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "night-owl",
+    "fateAssignedAt": "2026-09-09T16:59:32.772Z"
+  }
+]

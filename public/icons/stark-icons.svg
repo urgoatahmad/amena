@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none"><defs>
+<symbol id="command" viewBox="0 0 24 24"><path d="M5 5h5v5H5zM14 5h5v5h-5zM5 14h5v5H5zM14 14h5v5h-5z"/><path d="M10 7.5h4M7.5 10v4M16.5 10v4M10 16.5h4"/></symbol>
+<symbol id="team" viewBox="0 0 24 24"><path d="M12 3 21 19H3z"/><path d="M12 8v6M9 17h6"/></symbol>
+<symbol id="quantum" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8" ry="3.5" transform="rotate(35 12 12)"/><ellipse cx="12" cy="12" rx="8" ry="3.5" transform="rotate(-35 12 12)"/><circle cx="12" cy="12" r="1.5"/></symbol>
+<symbol id="lab" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M8 16h8"/></symbol>
+<symbol id="jarvis" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+<symbol id="archive" viewBox="0 0 24 24"><path d="M4 5h16v4H4zM6 9v10h12V9M9 13h6"/></symbol>
+<symbol id="network" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="m7 12 10-5M7 12l10 5"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3M9 15h6"/></symbol>
+</defs></svg>

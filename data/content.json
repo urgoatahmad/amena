@@ -1,0 +1,46 @@
+[
+  {
+    "id": "protocol-note",
+    "type": "note",
+    "title": "A Mission Built Around You",
+    "body": "Some missions save the world. This one exists to make one person feel seen, celebrated and impossible to forget.",
+    "kicker": "Mission briefing",
+    "date": "27 November",
+    "link": "",
+    "public": true,
+    "pinned": true
+  },
+  {
+    "id": "stark-log",
+    "type": "memory",
+    "title": "STARK INDUSTRIES // PERSONAL LOG",
+    "body": "JARVIS has reviewed the available evidence and reached a highly scientific conclusion: Amena deserves an unnecessarily impressive birthday system.",
+    "kicker": "Tony's workshop",
+    "date": "",
+    "link": "",
+    "public": true,
+    "pinned": false
+  },
+  {
+    "id": "avengers-note",
+    "type": "memory",
+    "title": "The Five on the Board",
+    "body": "Tony. Thor. Natasha. Wanda. Clint. Five very different heroes, all here because Amena's favorite Avengers deserve their own place in the protocol.",
+    "kicker": "Avengers Initiative",
+    "date": "",
+    "link": "",
+    "public": true,
+    "pinned": false
+  },
+  {
+    "id": "quantum-note",
+    "type": "system",
+    "title": "The Map Is Alive",
+    "body": "Coordinates will move, random events will interrupt the system, and new missions can be generated when the Quantum Map detects enough energy to make things interesting.",
+    "kicker": "Quantum Network",
+    "date": "",
+    "link": "",
+    "public": true,
+    "pinned": false
+  }
+]

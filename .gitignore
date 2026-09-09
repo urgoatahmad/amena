@@ -1,0 +1,12 @@
+node_modules/
+.env
+.DS_Store
+npm-debug.log*
+android/.gradle/
+android/local.properties
+*.jks
+*.keystore
+keystore.properties
+*.jks
+*.keystore
+keystore.properties

@@ -1,0 +1,30 @@
+{
+  "name": "the-stark-protocol",
+  "version": "43.0.0",
+  "private": true,
+  "description": "The Stark Protocol \u2014 futuristic Avengers-inspired birthday experience with JARVIS AI, quantum missions and a personal birthday vault.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js && node --check public/app.js && node --check public/admin.js",
+    "cap:sync": "npx cap sync",
+    "cap:open": "npx cap open android",
+    "cap:build": "npx cap sync && npx cap open android",
+    "cap:add": "npx cap add android",
+    "cap:icons": "npx @capacitor/assets generate --android --assetPath assets --iconBackgroundColor '#03050a' --iconBackgroundColorDark '#03050a' --splashBackgroundColor '#03050a' --splashBackgroundColorDark '#03050a'"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "@capacitor/core": "^7.4.2",
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/splash-screen": "^7.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/assets": "^3.0.5"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "appId": "com.stark.protocol",
+  "appName": "The Stark Protocol",
+  "webDir": "public",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1100,
+      "launchAutoHide": true,
+      "backgroundColor": "#03050a",
+      "showSpinner": false,
+      "backgroundColorDark": "#03050a"
+    }
+  }
+}

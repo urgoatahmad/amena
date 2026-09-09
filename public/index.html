@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050608">
+<meta name="description" content="The Stark Protocol — a living classified birthday command system for Amena.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon-192.png">
+<title>THE STARK PROTOCOL // COMMAND</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="boot" class="boot"><div class="boot-card"><div class="boot-mark"><span></span><i></i><b>ST</b></div><div class="boot-title">THE STARK PROTOCOL</div><div class="boot-sub">NEURAL COMMAND INTERFACE // BUILD 42</div><div class="boot-progress"><i></i></div><div class="boot-log" id="bootLog">ESTABLISHING SECURE CHANNEL…</div></div></div>
+<div id="permissionGate" class="permission-gate" aria-hidden="true">
+  <div class="permission-shell">
+    <div class="permission-top"><span class="eyebrow">INITIAL ACCESS // DIRECTOR DEVICE</span><span class="permission-build">SECURITY HANDSHAKE</span></div>
+    <div class="permission-mark"><span>ST</span><i></i></div>
+    <h2>AUTHORIZE THE<br><b>PROTOCOL.</b></h2>
+    <p class="permission-intro">A few device capabilities make the Stark Protocol feel alive. Notifications keep you informed, and voice access lets you speak directly to JARVIS.</p>
+    <div class="permission-list">
+      <article class="permission-row" id="permissionNotifications">
+        <div class="permission-icon">⌁</div><div class="permission-copy"><b>NOTIFICATIONS</b><span>System alerts, mission events and JARVIS updates.</span><small id="notificationState">AWAITING AUTHORIZATION</small></div><button class="btn hot permission-btn" data-permission="notifications">ENABLE</button>
+      </article>
+      <article class="permission-row" id="permissionMicrophone">
+        <div class="permission-icon">◉</div><div class="permission-copy"><b>VOICE INPUT</b><span>Allow JARVIS to hear you when you use voice commands.</span><small id="microphoneState">OPTIONAL // VOICE CHANNEL</small></div><button class="btn permission-btn" data-permission="microphone">ENABLE</button>
+      </article>
+      <article class="permission-row permission-info">
+        <div class="permission-icon">ϟ</div><div class="permission-copy"><b>AI NETWORK</b><span>Secure AI requests stay routed through the protocol server.</span><small>READY // NO DEVICE API KEY REQUIRED</small></div><div class="permission-check">READY</div>
+      </article>
+    </div>
+    <div class="permission-foot"><div class="skip-wrap"><button id="skipPermissions" class="permission-skip" disabled>SKIP FOR NOW <span id="skipCountdown">3</span></button></div><button id="enterProtocol" class="btn hot permission-enter" disabled>ENTER PROTOCOL</button></div>
+    <div class="permission-note">YOU CAN CHANGE THESE PERMISSIONS LATER IN YOUR DEVICE OR BROWSER SETTINGS.</div>
+  </div>
+</div>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="grid-noise"></div><div class="scan"></div>
+<header class="topbar">
+  <a class="brand" href="#home" data-route="home"><img src="/icon-192.png" alt=""><span><small>THE</small>STARK <em>PROTOCOL</em></span></a>
+  <div class="top-status"><span class="pulse-dot"></span><b id="systemState">ONLINE</b><i></i><span id="beirutClock">BEIRUT // --:--:--</span></div>
+  <button class="mobile-menu" id="menuBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</header>
+<aside class="rail" id="rail">
+  <div class="rail-top"><span>DIRECTOR</span><b>AMENA</b></div>
+  <nav>
+    <a data-route="home" href="#home"><i data-icon="command"></i><span>Command</span><small>01</small></a>
+    <a data-route="amena" href="#amena"><i data-icon="a"></i><span>Amena</span><small>02</small></a>
+    <a data-route="avengers" href="#avengers"><i data-icon="team"></i><span>Avengers</span><small>03</small></a>
+    <a data-route="quantum" href="#quantum"><i data-icon="quantum"></i><span>Quantum</span><small>04</small></a>
+    <a data-route="stark" href="#stark"><i data-icon="lab"></i><span>Stark Lab</span><small>05</small></a>
+    <a data-route="jarvis" href="#jarvis"><i data-icon="jarvis"></i><span>JARVIS</span><small>06</small></a>
+    <a data-route="archives" href="#archives"><i data-icon="archive"></i><span>Archives</span><small>07</small></a>
+    <a data-route="network" href="#network"><i data-icon="network"></i><span>Network</span><small>08</small></a>
+    <a data-route="redacted" href="#redacted"><i data-icon="lock"></i><span>Redacted</span><small>09</small></a>
+  </nav>
+  <div class="rail-foot"><span class="tiny-led"></span><span>SECURE LINK</span><b>v42.0</b></div>
+</aside>
+<div class="mobile-drawer" id="mobileDrawer"><div class="drawer-head"><span>COMMAND MENU</span><button id="drawerClose" aria-label="Close menu">×</button></div><div id="drawerLinks"></div></div>
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Primary navigation">
+  <a href="#home" data-route="home"><i data-icon="command"></i><span>Command</span></a>
+  <a href="#amena" data-route="amena"><i data-icon="a"></i><span>Amena</span></a>
+  <a href="#quantum" data-route="quantum"><i data-icon="quantum"></i><span>Quantum</span></a>
+  <a href="#jarvis" data-route="jarvis"><i data-icon="jarvis"></i><span>JARVIS</span></a>
+  <button type="button" id="mobileMore" aria-label="More panels"><i>+</i><span>More</span></button>
+</nav>
+<main id="app"></main>
+<div class="ticker"><div id="tickerTrack">STARK NETWORK NOMINAL <b>///</b> QUANTUM FIELD STABLE <b>///</b> AMENA PROTOCOL PRIORITY: MAXIMUM <b>///</b> JARVIS MONITORING ACTIVE <b>///</b></div></div>
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal" aria-hidden="true"><div id="modalInner" class="modal-inner"></div></div>
+<script src="/api-config.js"></script><script src="/app.js"></script>
+</body></html>
