@@ -8,6 +8,7 @@
     "secretWord": "jarvis"
   },
   "permanentUnlock": false,
+  "amenaOverride": "auto",
   "explore": {
     "commonRoomTitle": "Stark Command",
     "commonRoomText": "A private command deck built around a glowing core, moving telemetry, holographic-style diagnostics and a seat reserved for Amena.",
@@ -15,6 +16,5 @@
     "candleText": "The old candle system has been retired. The reactor chamber now powers the interactive Stark Lab experiences.",
     "mapTitle": "Quantum Map",
     "mapText": "Coordinates shift, anomalies appear and AI-generated missions can be created on demand."
-  },
-  "amenaUnlocked": false
+  }
 }

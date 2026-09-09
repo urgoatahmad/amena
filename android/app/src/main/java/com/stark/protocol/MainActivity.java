@@ -13,6 +13,7 @@ import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
     private static final int STARTUP_PERMISSIONS = 7401;
+    private static final int MICROPHONE_PERMISSION = 7402;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,17 @@ public class MainActivity extends BridgeActivity {
                 }
             });
         }
+
+        @JavascriptInterface
+        public void requestMicrophone() {
+            runOnUiThread(() -> {
+                if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, MICROPHONE_PERMISSION);
+                } else {
+                    sendMicrophoneResult(true);
+                }
+            });
+        }
     }
 
     @Override
@@ -43,6 +55,16 @@ public class MainActivity extends BridgeActivity {
         if (requestCode == STARTUP_PERMISSIONS) {
             boolean granted = Build.VERSION.SDK_INT < 33 || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
             sendNotificationResult(granted);
+        } else if (requestCode == MICROPHONE_PERMISSION) {
+            boolean granted = Build.VERSION.SDK_INT < 23 || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+            sendMicrophoneResult(granted);
+        }
+    }
+
+    private void sendMicrophoneResult(boolean granted) {
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            String js = "window.__starkMicrophoneResult && window.__starkMicrophoneResult(" + (granted ? "true" : "false") + ");";
+            getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(js, null));
         }
     }
 

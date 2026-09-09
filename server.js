@@ -17,6 +17,7 @@ const BIRTHDAY_DAY = 27;
 const SUBJECT_NAME = 'Amena';
 const GEMINI_API_KEY = String(process.env.GEMINI_API_KEY || '');
 const GEMINI_MODEL = String(process.env.GEMINI_MODEL || 'gemini-3.7-flash');
+const GEMINI_TTS_MODEL = String(process.env.GEMINI_TTS_MODEL || 'gemini-3.1-flash-tts-preview');
 const CONTROL_PASSWORD = String(process.env.CONTROL_PASSWORD || 'REDACTEDGODS');
 const PREBIRTHDAY_DAYS = 60;
 const CYCLE_MS = 10 * 24 * 60 * 60 * 1000;
@@ -40,6 +41,7 @@ function defaultSettings() {
     "secretWord": "jarvis"
   },
   "permanentUnlock": false,
+  "amenaOverride": "auto",
   "explore": {
     "commonRoomTitle": "Stark Command",
     "commonRoomText": "A futuristic command deck with an arc-reactor core, holographic displays and a seat reserved for Amena.",
@@ -301,7 +303,8 @@ function getSettings() {
     ...d,
     ...s,
     birthdayLetter: { ...d.birthdayLetter, ...(s.birthdayLetter || {}) },
-    explore: { ...d.explore, ...(s.explore || {}) }
+    explore: { ...d.explore, ...(s.explore || {}) },
+    amenaOverride: s.amenaOverride || (s.amenaUnlocked === true ? 'open' : 'auto')
   };
 }
 function clean(value, max = 10_000) { return String(value ?? '').replace(/\u0000/g, '').trim().slice(0, max); }
@@ -319,14 +322,14 @@ function safeEqual(a, b) {
   return A.length === B.length && crypto.timingSafeEqual(A, B);
 }
 function setCookie(res, name, value, maxAge = 86_400) {
-  const crossOrigin = !!res.__origin;
+  const crossOrigin = !!res.__origin && (() => { try { return new URL(res.__origin).host !== String(res.reqHost || '') || new URL(res.__origin).protocol !== (res.reqProtocol || ''); } catch { return true; } })();
   const cookieMode = crossOrigin ? 'SameSite=None; Secure' : 'SameSite=Lax';
   const c = `${name}=${encodeURIComponent(value)}; HttpOnly; ${cookieMode}; Path=/; Max-Age=${maxAge}`;
   const existing = res.getHeader('Set-Cookie');
   res.setHeader('Set-Cookie', existing ? [...[].concat(existing), c] : c);
 }
 function clearCookies(res, names) {
-  const crossOrigin = !!res.__origin;
+  const crossOrigin = !!res.__origin && (() => { try { return new URL(res.__origin).host !== String(res.reqHost || '') || new URL(res.__origin).protocol !== (res.reqProtocol || ''); } catch { return true; } })();
   const cookieMode = crossOrigin ? 'SameSite=None; Secure' : 'SameSite=Lax';
   res.setHeader('Set-Cookie', names.map(n => `${n}=; HttpOnly; ${cookieMode}; Path=/; Max-Age=0`));
 }
@@ -367,7 +370,7 @@ function send(res, status, payload, type = 'application/json; charset=utf-8') {
     'Cache-Control': type.startsWith('application/json') ? 'no-store' : 'public, max-age=3600',
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+    'Permissions-Policy': 'camera=(), microphone=(self), geolocation=()',
     'X-Frame-Options': 'SAMEORIGIN'
   };
   if (res.__origin && CORS_ORIGINS.has(res.__origin)) {
@@ -421,11 +424,12 @@ function birthdayState(req) {
   const bd = birthdayDate();
   const settings = getSettings();
   const permanentUnlock = settings.permanentUnlock === true;
-  const amenaUnlocked = settings.amenaUnlocked === true;
   const calendarUnlocked = Date.now() >= bd.getTime();
   const adminPreview = (adminValid(req) || controlValid(req)) && parseCookies(req).adminPreview === '1';
   const unlocked = permanentUnlock || calendarUnlocked || adminPreview;
-  return { unlocked, amenaUnlocked: amenaUnlocked || unlocked, calendarUnlocked, permanentUnlock, preview: adminPreview, target: bd.toISOString(), timezone: BEIRUT_TZ };
+  const override = ['auto','open','closed'].includes(settings.amenaOverride) ? settings.amenaOverride : 'auto';
+  const amenaUnlocked = override === 'open' || (override !== 'closed' && unlocked);
+  return { unlocked, amenaUnlocked, amenaOverride: override, calendarUnlocked, permanentUnlock, preview: adminPreview, target: bd.toISOString(), timezone: BEIRUT_TZ };
 }
 function activeCycle() {
   const bd = birthdayDate();
@@ -502,7 +506,7 @@ function controlValid(req) {
   return Number.isFinite(n) && Date.now() - n < 24 * 60 * 60 * 1000 && safeEqual(sig || '', sign(`control:${ts}`));
 }
 async function geminiGenerate({system, history=[], message, maxOutputTokens=700, json=false}) {
-  if (!GEMINI_API_KEY) return { ok:false, error:'Gemini is not configured. Add GEMINI_API_KEY to the server.' };
+  if (!GEMINI_API_KEY) return { ok:false, error:'Gemini is not configured. Add GEMINI_API_KEY to Railway.' };
   const contents = [];
   for (const h of history) {
     const role = h.role === 'assistant' ? 'model' : 'user';
@@ -516,16 +520,72 @@ async function geminiGenerate({system, history=[], message, maxOutputTokens=700,
     generationConfig: { maxOutputTokens }
   };
   if (json) payload.generationConfig.responseMimeType = 'application/json';
-  try {
-    const rr = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent`, {
-      method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY}, body:JSON.stringify(payload)
-    });
-    const data = await rr.json();
-    if (!rr.ok) { console.error('Gemini API:', data); return {ok:false,error:'Gemini could not complete that request.'}; }
-    const text = String(data?.candidates?.[0]?.content?.parts?.map(x=>x.text||'').join('') || '').trim();
-    if (!text) return {ok:false,error:'Gemini returned an empty response.'};
-    return {ok:true,text};
-  } catch (error) { console.error(error); return {ok:false,error:'Gemini lost connection to the mainframe.'}; }
+  const models = [...new Set([GEMINI_MODEL, 'gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash'])];
+  let lastError = 'Gemini could not complete that request.';
+  for (const model of models) {
+    try {
+      const rr = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method:'POST', headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY}, body:JSON.stringify(payload)
+      });
+      const data = await rr.json();
+      if (!rr.ok) {
+        const apiMessage = String(data?.error?.message || '').trim();
+        console.error(`Gemini API ${model} ${rr.status}:`, data);
+        lastError = rr.status === 401 || rr.status === 403 ? 'Gemini authorization failed. Check GEMINI_API_KEY in Railway.' : rr.status === 429 ? 'Gemini is rate-limited. JARVIS will use local core responses for now.' : apiMessage ? `Gemini unavailable: ${apiMessage.slice(0,220)}` : `Gemini unavailable (HTTP ${rr.status}).`;
+        continue;
+      }
+      const text = String(data?.candidates?.[0]?.content?.parts?.map(x=>x.text||'').join('') || '').trim();
+      if (text) return {ok:true,text,model};
+      lastError='Gemini returned an empty response.';
+    } catch (error) {
+      console.error(`Gemini ${model} connection:`, error);
+      lastError='Gemini lost connection to the mainframe.';
+    }
+  }
+  return {ok:false,error:lastError};
+}
+
+function jarvisFallback(message) {
+  const q = normalize(message);
+  if (/(hello|hi|hey|good (morning|afternoon|evening))/.test(q)) return 'Good evening, Director. All primary systems are nominal. How may I assist?';
+  if (/(status|diagnostic|systems|system check|how are (you|things))/.test(q)) return 'All primary systems are operational. Quantum stability is nominal, the Director channel is secure, and Amena remains the highest-priority item on the board.';
+  if (/(what|where).*(explore|do|next)|what should i explore/.test(q)) return 'Start with Quantum. Choose the shortest mission first. It is considerably less dramatic than the interface suggests.';
+  if (/mission|challenge|task/.test(q)) return 'Mission available. Proceed to Quantum and select a node. I recommend beginning with the easiest protocol before attempting anything unnecessarily heroic.';
+  if (/who.*(best|favorite|important)|favorite person/.test(q)) return 'Amena, of course. I assumed that was obvious. The entire protocol was built around her.';
+  return 'I can answer that when the main intelligence channel is available. For now, consider this a temporary local-core response rather than a system failure.';
+}
+
+function pcmToWav(pcm) {
+  const channels=1, sampleRate=24000, bits=16;
+  const blockAlign=channels*bits/8, byteRate=sampleRate*blockAlign;
+  const out=Buffer.alloc(44+pcm.length);
+  out.write('RIFF',0); out.writeUInt32LE(36+pcm.length,4); out.write('WAVE',8);
+  out.write('fmt ',12); out.writeUInt32LE(16,16); out.writeUInt16LE(1,20); out.writeUInt16LE(channels,22);
+  out.writeUInt32LE(sampleRate,24); out.writeUInt32LE(byteRate,28); out.writeUInt16LE(blockAlign,32); out.writeUInt16LE(bits,34);
+  out.write('data',36); out.writeUInt32LE(pcm.length,40); pcm.copy(out,44); return out;
+}
+
+async function geminiTts(text) {
+  if (!GEMINI_API_KEY) return {ok:false,error:'Gemini is not configured.'};
+  const prompt = `Synthesize ONLY the spoken dialogue below. You are an original cinematic AI butler voice for a futuristic private birthday command system. Use a mature, deep, calm British male voice with crisp diction, restrained authority, subtle warmth, dry wit, and controlled pacing. Do not sound youthful, bubbly, feminine, robotic, cartoonish, or like a generic virtual assistant. No music. No sound effects. No singing. Do not add words before or after the dialogue.
+
+SPOKEN DIALOGUE:
+${clean(text,5000)}`;
+  for (let attempt=0; attempt<2; attempt++) {
+    try {
+      const rr=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{
+        method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_API_KEY,'Api-Revision':'2026-05-20'},
+        body:JSON.stringify({model:GEMINI_TTS_MODEL,input:prompt,response_format:{type:'audio'},generation_config:{speech_config:[{voice:'Gacrux'}]}})
+      });
+      const data=await rr.json();
+      if(!rr.ok){console.error('Gemini TTS:',data);continue;}
+      const encoded=data?.output_audio?.data;
+      if(!encoded) continue;
+      const pcm=Buffer.from(String(encoded),'base64');
+      return {ok:true,audio:pcmToWav(pcm)};
+    }catch(error){console.error('Gemini TTS connection:',error)}
+  }
+  return {ok:false,error:'JARVIS voice synthesis is temporarily unavailable.'};
 }
 function fallbackMission(difficulty='MEDIUM') {
   const missions = [
@@ -615,12 +675,12 @@ ensureFiles();
 
 const server = http.createServer(async (req, res) => {
   try {
-    res.__origin = String(req.headers.origin || '');
+    res.__origin = String(req.headers.origin || ''); res.reqHost = String(req.headers.host || ''); res.reqProtocol = String(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim();
     if (req.method === 'OPTIONS') {
       if (res.__origin && CORS_ORIGINS.has(res.__origin)) {
         res.setHeader('Access-Control-Allow-Origin', res.__origin);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
         res.setHeader('Vary', 'Origin');
         return res.writeHead(204).end();
@@ -773,22 +833,32 @@ CORE DIRECTIVES:
         return send(res, 200, {ok:true,reply:'Amena, of course. I assumed that was obvious. The entire protocol was built around her.'});
       }
       const result = await geminiGenerate({system,history,message,maxOutputTokens:700});
-      if (!result.ok) return send(res, 502, {ok:false,error:result.error});
-      return send(res, 200, {ok:true,reply:result.text});
+      if (!result.ok) return send(res, 200, {ok:true,reply:jarvisFallback(message),ai:false,notice:result.error});
+      return send(res, 200, {ok:true,reply:result.text,ai:true,model:result.model});
+    }
+    if (p === '/api/jarvis/tts' && req.method === 'POST') {
+      const d=await body(req), text=clean(d.text,5000);
+      if(!text) return send(res,400,{ok:false,error:'No dialogue supplied.'});
+      const result=await geminiTts(text);
+      if(!result.ok) return send(res,503,{ok:false,error:result.error});
+      const audioHeaders={'Content-Type':'audio/wav','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
+      if(res.__origin && CORS_ORIGINS.has(res.__origin)){audioHeaders['Access-Control-Allow-Origin']=res.__origin;audioHeaders['Access-Control-Allow-Credentials']='true';audioHeaders['Vary']='Origin';}
+      res.writeHead(200,audioHeaders);
+      return res.end(result.audio);
     }
     if (p === '/api/quantum/mission' && req.method === 'POST') {
       const d = await body(req);
       const difficulty = ['EASY','MEDIUM','HARD'].includes(String(d.difficulty||'').toUpperCase()) ? String(d.difficulty).toUpperCase() : 'MEDIUM';
       const seed = clean(d.seed, 120) || crypto.randomUUID();
-      const system = `Design a fictional Stark Protocol phone mission for Amena. This is a private birthday experience for an adult audience, so the tone should be sophisticated, cinematic, mischievous, competitive and clever rather than childish. Think espionage puzzles, hidden patterns, code-breaking, bluff detection, logic traps, timed decisions, social deduction and Stark-style dry humor. Do not make it violent, dangerous, illegal, sexual, or dependent on real-world weapons, substances, or unsafe stunts. It must be playable entirely by tapping one of exactly THREE answer choices on a phone. Avoid basic superhero trivia and generic “save the world” fetch quests. Give it a strong hook, a clear win condition and a twist. Difficulty: ${difficulty}. Random seed: ${seed}. Return JSON only with keys title, location, difficulty, brief, objective, challenge, choices, correctIndex, timerSeconds. ` +
-        `choices must be an array of exactly 3 distinct strings. correctIndex must be 0, 1, or 2. timerSeconds must be 20-45. Keep the text concise, specific and cinematic.`;
+      const system = `Design a fictional Stark Protocol phone mission for Amena. This is a private birthday experience for an adult audience, so the tone should be sophisticated, cinematic, mischievous, competitive and clever rather than childish. Think espionage puzzles, hidden patterns, code-breaking, bluff detection, logic traps, timed decisions, social deduction and Stark-style dry humor. Do not make it violent, dangerous, illegal, sexual, or dependent on real-world weapons, substances, or unsafe stunts. It must be playable entirely by tapping one of exactly THREE answer choices on a phone. Avoid basic superhero trivia and generic “save the world” fetch quests. Give it a strong hook, a clear win condition and a twist. Difficulty: ${difficulty}. Keep EASY missions extremely simple and forgiving: one obvious observation or pattern, no multi-step deduction. Random seed: ${seed}. Return JSON only with keys title, location, difficulty, brief, objective, challenge, choices, correctIndex, timerSeconds. ` +
+        `choices must be an array of exactly 3 distinct strings. correctIndex must be 0, 1, or 2. timerSeconds must be 15-30. Keep the text concise, specific and cinematic.`;
       const result = await geminiGenerate({system,message:`Generate one original mission now. It must feel meaningfully different from the previous mission and must be playable entirely on a phone. Seed: ${seed}`,maxOutputTokens:750,json:true});
       if (!result.ok) return send(res, 200, {ok:true,ai:false,mission:fallbackMission(difficulty),notice:result.error});
       try {
         const mission = JSON.parse(result.text);
         const choices = Array.isArray(mission.choices) ? mission.choices.map(x => clean(x,160)).filter(Boolean).slice(0,3) : [];
         const correctIndex = Number.isInteger(mission.correctIndex) ? mission.correctIndex : Number(mission.correctIndex);
-        const timerSeconds = Math.min(45, Math.max(20, Number(mission.timerSeconds) || 30));
+        const timerSeconds = Math.min(30, Math.max(15, Number(mission.timerSeconds) || 20));
         if (choices.length !== 3 || !Number.isInteger(correctIndex) || correctIndex < 0 || correctIndex > 2) throw new Error('Invalid mission game format');
         const safe = {title:clean(mission.title,100)||'QUANTUM ANOMALY',location:clean(mission.location,60)||'UNKNOWN',difficulty:clean(mission.difficulty,20)||difficulty,brief:clean(mission.brief,500),objective:clean(mission.objective,240),challenge:clean(mission.challenge,500),choices,correctIndex,timerSeconds};
         return send(res,200,{ok:true,ai:true,mission:safe});
@@ -807,13 +877,16 @@ CORE DIRECTIVES:
     if (p === '/api/control/amena' && req.method === 'POST') {
       if (!controlValid(req)) return send(res,401,{ok:false,error:'Director Mode is locked.'});
       const d=await body(req), settings=getSettings();
-      settings.amenaUnlocked = d.enabled === true;
+      const mode = ['auto','open','closed'].includes(String(d.mode||'').toLowerCase()) ? String(d.mode).toLowerCase() : (d.enabled === true ? 'open' : d.enabled === false ? 'closed' : 'auto');
+      settings.amenaOverride = mode;
+      delete settings.amenaUnlocked;
       writeJSON('settings.json', settings);
-      return send(res,200,{ok:true,enabled:settings.amenaUnlocked});
+      const b=birthdayState(req);
+      return send(res,200,{ok:true,mode,amenaUnlocked:b.amenaUnlocked});
     }
     if (p === '/api/control/data' && req.method === 'GET') {
       if (!controlValid(req)) return send(res,401,{ok:false,error:'Director Mode is locked.'});
-      const settings=getSettings(); return send(res,200,{content:readJSON('content.json'),letter:settings.birthdayLetter,amenaUnlocked:settings.amenaUnlocked===true});
+      const settings=getSettings(); return send(res,200,{content:readJSON('content.json'),letter:settings.birthdayLetter,amenaUnlocked:birthdayState(req).amenaUnlocked,amenaOverride:settings.amenaOverride});
     }
     if (p === '/api/control/letter' && req.method === 'POST') {
       if (!controlValid(req)) return send(res,401,{ok:false,error:'Director Mode is locked.'});

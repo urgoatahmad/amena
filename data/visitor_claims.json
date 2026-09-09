@@ -33,5 +33,19 @@
     "rewardHistory": [],
     "fate": "night-owl",
     "fateAssignedAt": "2026-09-09T16:59:32.772Z"
+  },
+  {
+    "id": "8c96a7ae-68db-4f9b-a5a7-5420a12d7fd3",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "moonlit",
+    "fateAssignedAt": "2026-09-09T17:25:35.148Z"
+  },
+  {
+    "id": "f2d71599-4f51-46ea-9121-dc8fb557f785",
+    "candleClaimed": false,
+    "rewardHistory": [],
+    "fate": "starlit",
+    "fateAssignedAt": "2026-09-09T17:25:35.162Z"
   }
 ]

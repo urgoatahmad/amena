@@ -88,3 +88,46 @@
 /* First-launch permission gate */
 .permission-gate{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:22px;background:rgba(2,4,7,.94);backdrop-filter:blur(18px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .28s,visibility .28s}.permission-gate.open{opacity:1;visibility:visible;pointer-events:auto}.permission-shell{width:min(720px,100%);max-height:min(900px,calc(100dvh - 28px));overflow:auto;background:linear-gradient(145deg,rgba(13,18,24,.98),rgba(5,8,12,.99));border:1px solid #26343e;border-radius:10px;padding:28px;box-shadow:0 35px 100px rgba(0,0,0,.65);position:relative}.permission-shell:before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 18px rgba(126,231,255,.4)}.permission-top{display:flex;justify-content:space-between;gap:20px;align-items:center}.permission-build{font:500 8px var(--mono);color:#53616c;letter-spacing:.12em}.permission-mark{width:58px;height:58px;margin:28px 0 15px;border:1px solid rgba(126,231,255,.4);display:grid;place-items:center;position:relative;background:radial-gradient(circle,rgba(126,231,255,.12),transparent 65%)}.permission-mark span{font:900 17px var(--head);color:#e7fbff}.permission-mark i{position:absolute;inset:-7px;border:1px dashed rgba(126,231,255,.18);animation:spin 12s linear infinite}.permission-shell h2{font:900 clamp(32px,7vw,58px) var(--head);line-height:.94;letter-spacing:-.05em;margin:0 0 13px}.permission-shell h2 b{color:transparent;-webkit-text-stroke:1px #8e9da7}.permission-intro{max-width:600px;color:#7d8a94;font-size:12px;line-height:1.7;margin:0 0 24px}.permission-list{display:grid;gap:8px}.permission-row{display:grid;grid-template-columns:42px 1fr auto;gap:13px;align-items:center;padding:14px;border:1px solid #1c2730;background:#080c11;border-radius:6px}.permission-icon{width:36px;height:36px;display:grid;place-items:center;border:1px solid #2b3943;color:var(--cyan);font:700 16px var(--mono)}.permission-copy{min-width:0}.permission-copy b{display:block;font:700 10px var(--head);letter-spacing:.06em}.permission-copy span{display:block;color:#6e7d87;font-size:10px;line-height:1.5;margin-top:3px}.permission-copy small{display:block;color:#4d5c66;font:500 7px var(--mono);letter-spacing:.08em;margin-top:6px}.permission-btn{min-width:92px}.permission-check{font:700 8px var(--mono);color:var(--green);border:1px solid rgba(114,226,174,.25);padding:9px}.permission-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px}.permission-enter{min-width:170px}.permission-skip{border:0;background:none;color:#45535d;font:600 8px var(--mono);letter-spacing:.12em;padding:12px 4px}.permission-skip:disabled{cursor:not-allowed;opacity:.75}.permission-skip.ready{color:#93a1aa}.permission-skip span{display:inline-block;min-width:10px;color:var(--cyan)}.permission-note{text-align:center;margin-top:15px;color:#3e4b54;font:500 7px var(--mono);letter-spacing:.08em;line-height:1.6}
 @media(max-width:760px){.permission-gate{padding:10px;align-items:end}.permission-shell{max-height:calc(100dvh - 10px);padding:20px 16px 16px;border-radius:10px 10px 0 0}.permission-top{align-items:flex-start}.permission-build{display:none}.permission-mark{width:48px;height:48px;margin:16px 0 12px}.permission-shell h2{font-size:39px}.permission-intro{font-size:11px;margin-bottom:17px}.permission-row{grid-template-columns:34px 1fr;gap:10px;padding:11px}.permission-icon{width:32px;height:32px;font-size:14px}.permission-btn{grid-column:2;justify-self:start;min-height:40px}.permission-copy span{font-size:9px}.permission-foot{position:sticky;bottom:0;margin:14px -16px -16px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(6,9,13,.97);border-top:1px solid #1a252e}.permission-enter{min-width:145px}.permission-note{padding-bottom:env(safe-area-inset-bottom)}}
+
+/* V44 mobile compact mode: keep the interface intentionally narrow and easy to scan. */
+@media(max-width:760px){
+  .page{width:min(430px,calc(100% - 18px));padding-top:calc(78px + env(safe-area-inset-top));}
+  .page-hero{gap:8px;margin-bottom:14px}.page-hero p{font-size:11px;line-height:1.6}.page-hero h2{margin:10px 0 7px}
+  .command-top{gap:4px}.command-copy p{font-size:11px;line-height:1.65}.command-copy h1{margin:13px 0 10px}
+  .core-stage{height:250px}.core{width:125px;height:125px}.core span{font-size:29px}.core-label{font-size:7px}
+  .metrics{gap:6px}.metric{padding:10px}.metric b{font-size:12px}.metric small{font-size:7px}
+  .panel{padding:13px;margin-bottom:8px}.panel-head{margin-bottom:10px}.panel-head h3{font-size:12px}
+  .quantum-map{min-height:390px;height:390px}.q-ring.r1{width:220px;height:220px}.q-ring.r2{width:300px;height:300px}.q-ring.r3{width:380px;height:380px}
+  .q-core{width:76px;height:76px}.q-core span{font-size:18px}.q-node{width:82px!important;min-height:54px!important;padding:6px 4px;font-size:7px}.q-node small{font-size:6px}.q-node span{font-size:6px}
+  .n1{left:1%;top:15%}.n2{right:1%;top:18%}.n3{right:0;bottom:19%}.n4{left:1%;bottom:17%}.n5{left:31%;top:4%}.n6{right:30%;bottom:5%}
+  .game-list button{min-height:58px;padding:9px}.game-list button b{font-size:8px}.game-list button small{font-size:6px}
+  .game-panel{margin-top:10px;padding:13px}.game-head h3{font-size:13px;line-height:1.35}.game-time{width:52px;height:52px;flex-basis:52px}
+  .cipher-code,.pattern-seq{font-size:22px}.choice-grid button{min-height:48px}.memory-grid{grid-template-columns:repeat(2,72px)}.memory-grid button{height:72px}.react-grid{grid-template-columns:repeat(3,58px)}.react-grid button{height:58px}.route-sequence{display:flex;justify-content:center;align-items:center;gap:8px;margin:12px 0;font:800 20px var(--mono)}.route-sequence span{color:#50616b}.route-grid{gap:6px}.route-grid button{min-height:48px}.routing .btn{margin-top:8px}
+  .bluff-list{gap:7px}.bluff-list button{min-height:50px;padding:10px;text-align:left}
+  .director-console{margin-top:18px}.director-console label{font-size:7px}.director-console textarea{height:210px}.console-head .actions{gap:6px}.console-head .actions .btn{font-size:7px;padding:0 10px}
+  .control-card textarea{height:120px}.control-card input{margin-top:6px}.control-card .btn{min-height:42px}
+}
+
+.director-status{display:flex;justify-content:space-between;align-items:center;margin:10px 0 18px;padding:11px 12px;border:1px solid #1c2932;background:#070b0f;font:600 8px var(--mono);color:#566771}.director-status b{color:var(--cyan);letter-spacing:.12em}.cc-label{display:block!important;margin:0 0 7px!important}.cc-label input{margin-top:6px}.mobile-drawer:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:rgba(0,0,0,.25)}
+@media(max-width:760px){.director-status{margin-top:8px}.page{max-width:430px}.mobile-drawer{max-width:430px;margin-left:auto;margin-right:auto}.command-top .core-stage{order:2}.topbar .brand span{letter-spacing:.11em}.brand img{width:30px;height:30px}.mobile-bottom-nav{min-height:70px}.mobile-bottom-nav a,.mobile-bottom-nav button{min-height:52px}.ticker{height:20px}.game-panel{border-radius:9px}.game-result{margin-top:10px}.director-status{font-size:7px}}
+
+/* v45 JARVIS voice + compact mobile tuning */
+.jarvis-meta{display:block;margin:4px 0 0;font:500 7px var(--mono);letter-spacing:.12em;color:#4f626c}
+.jarvis-msg.bot{border-left-color:rgba(126,231,255,.65);box-shadow:inset 18px 0 30px rgba(126,231,255,.018)}
+.ai-state{min-width:118px;justify-content:center}
+@media(max-width:760px){
+  .page{width:min(100%,430px);padding:78px 10px 88px}
+  .panel{padding:14px}
+  .panel-head{margin-bottom:12px}
+  .page-hero h2{font-size:42px}
+  .command-copy h1{font-size:44px}
+  .jarvis-messages{height:48vh;min-height:230px;max-height:390px}
+  .jarvis-msg{padding:12px 11px}
+  .jarvis-msg p{font-size:12px;line-height:1.6}
+  .suggestions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .suggestions button{min-height:42px;padding:8px;font-size:8px}
+  #jarvisForm{gap:6px}
+  #jarvisForm .btn{min-height:46px}
+  .jarvis-tools{display:grid;grid-template-columns:1fr 1fr}
+  .jarvis-tools .btn{min-height:44px}
+}

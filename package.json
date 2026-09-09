@@ -1,6 +1,6 @@
 {
   "name": "the-stark-protocol",
-  "version": "43.0.0",
+  "version": "45.0.0",
   "private": true,
   "description": "The Stark Protocol \u2014 futuristic Avengers-inspired birthday experience with JARVIS AI, quantum missions and a personal birthday vault.",
   "type": "commonjs",
